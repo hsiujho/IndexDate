@@ -1,0 +1,21 @@
+Package: IndexDate
+Type: Package
+Title: matching and demography
+Version: 0.1
+Date: 2015-12-03
+Author: Who wrote it
+Maintainer: Who to complain to <yourfault@somewhere.net>
+Description: More about what it does (maybe more than one line)
+License: What license is it under?
+LazyData: TRUE
+Imports:
+    Rcpp,
+    RcppArmadillo,
+    RcppParallel,
+    RcppProgress
+LinkingTo:
+    Rcpp,
+    RcppArmadillo,
+    RcppParallel,
+    RcppProgress
+Depends: cmprsk,magrittr,pipeR,reshape2,tibble,dplyr
