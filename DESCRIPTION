@@ -4,7 +4,7 @@ Title: matching and demography
 Version: 0.1
 Date: 2015-12-03
 Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
+Maintainer: hsiujho <hsiujho@gmail.com>
 Description: More about what it does (maybe more than one line)
 License: What license is it under?
 LazyData: TRUE
@@ -12,10 +12,16 @@ Imports:
     Rcpp,
     RcppArmadillo,
     RcppParallel,
-    RcppProgress
+    RcppProgress,cmprsk,magrittr,pipeR,
+    plyr,stringr,stringi,reshape2,
+    assertthat,lazyeval,tibble,
+    DBI,BH,dplyr
 LinkingTo:
     Rcpp,
     RcppArmadillo,
     RcppParallel,
     RcppProgress
-Depends: cmprsk,magrittr,pipeR,plyr,stringr,stringi,reshape2,assertthat,lazyeval,tibble,DBI,BH,dplyr
+Depends: cmprsk,magrittr,pipeR,
+    plyr,stringr,stringi,reshape2,
+    assertthat,lazyeval,tibble,
+    DBI,BH,dplyr
