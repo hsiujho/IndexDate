@@ -18,4 +18,4 @@ LinkingTo:
     RcppArmadillo,
     RcppParallel,
     RcppProgress
-Depends: cmprsk,magrittr,pipeR,reshape2,tibble,dplyr
+Depends: cmprsk,magrittr,pipeR,plyr,stringr,stringi,reshape2,assertthat,lazyeval,tibble,dplyr
