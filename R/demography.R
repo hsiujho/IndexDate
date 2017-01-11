@@ -107,16 +107,25 @@ demo_fn_v2=function(y,group_var,disc_var,cont_var,big.mark=",",perc.sym=T,dig.di
         tmp=try(chisq.test(y[[group_var]],y[[i]]))
         k0[[i]]=c(i,ifelse("try-error" %in% class(tmp),"",pv_fn(tmp$p.value)))
       }
-      k1=do.call(rbind,k0) %>>% as.data.frame() %>>% setNames(c("variable","pvalue"))
+      k1=do.call(rbind,k0) %>>% as.data.frame(stringsAsFactors =F) %>>% setNames(c("variable","pvalue"))
     }
 
-    l1=melt(y,id.vars = group_var,measure.vars = disc_var,value.name = "stat") %>>% group_by_(.dots=c(group_var,"variable","stat")) %>>% summarise(N=n()) %>>% left_join(l0,by=group_var) %>>% mutate(lab=sprintf("%s (%s%s)",prettyNum(N,big.mark=big.mark),sprintf(sprintf("%%.%if",dig.disc),N/gN*100),ifelse(perc.sym,"%",""))) %>>% mutate_each(funs(as.character),stat) %>>% dcast(sprintf("variable+stat~%s",group_var),value.var="lab") %>>% {
-      if(gn>1){
-        left_join(.,k1,by="variable")
-      } else {
-        .
+    l1=mutate_each_(y,funs(as.character),disc_var) %>>%
+      melt(id.vars = group_var,measure.vars = disc_var,value.name = "stat") %>>%
+      group_by_(.dots=c(group_var,"variable","stat")) %>>%
+      summarise(N=n()) %>>%
+      left_join(l0,by=group_var) %>>%
+      mutate(lab=sprintf("%s (%s%s)",prettyNum(N,big.mark=big.mark),sprintf(sprintf("%%.%if",dig.disc),N/gN*100),ifelse(perc.sym,"%",""))) %>>%
+      mutate_each(funs(as.character),stat) %>>%
+      dcast(sprintf("variable+stat~%s",group_var),value.var="lab",stringsAsFactors=F) %>>%
+      mutate_each(funs(as.character),variable) %>>%
+      {
+        if(gn>1){
+          left_join(.,k1,by="variable")
+        } else {
+          .
+        }
       }
-    }
     l3=bind_rows(l3,l1)
   }
 
@@ -134,9 +143,9 @@ demo_fn_v2=function(y,group_var,disc_var,cont_var,big.mark=",",perc.sym=T,dig.di
         }
         pv11=ifelse("try-error" %in% class(pv1),"",pv_fn(pv1$'Pr(>F)'[1]))
         pv22=ifelse("try-error" %in% class(pv2),"",pv_fn(pv2$p.value))
-        k0[[i]]=cbind(i,c("MeanSD","Median_Q1Q3"),c(pv11,pv22))
+        k0[[i]]=cbind(i,c("Mean\u00B1SD","Median (Q1-Q3)"),c(pv11,pv22))
       }
-      k1=do.call(rbind,k0) %>>% as.data.frame() %>>% setNames(c("variable","stat","pvalue"))
+      k1=do.call(rbind,k0) %>>% as.data.frame(stringsAsFactors =F) %>>% setNames(c("variable","stat","pvalue"))
     }
 
     prefn=function(x,a=big.mark){
@@ -146,10 +155,16 @@ demo_fn_v2=function(y,group_var,disc_var,cont_var,big.mark=",",perc.sym=T,dig.di
       as.numeric(a0[1]) %>>% prettyNum(big.mark=a) %>>% (paste0(c(.,a0[2]),collapse="."))
     }
 
-    l2=melt(y,id.vars = group_var,measure.vars = cont_var) %>>% group_by_(.dots=c(group_var,"variable")) %>>%
+    l2=mutate_each_(y,funs(as.numeric),cont_var) %>>%
+      melt(id.vars = group_var,measure.vars = cont_var) %>>%
+      group_by_(.dots=c(group_var,"variable")) %>>%
       #      summarise(Mean=mean(value,na.rm=T),SD=sd(value,na.rm=T),median=median(value,na.rm=T),Q1=quantile(value,0.25,na.rm=T),Q3=quantile(value,.75,na.rm=T),MeanSD=sprintf("%.1f\u00B1%.1f",Mean,SD),Median_Q1Q3=sprintf("%.1f (%.1f-%.1f)",median,Q1,Q3)) %>>%
-      summarise(Mean=prefn(mean(value,na.rm=T)),SD=prefn(sd(value,na.rm=T)),median=prefn(median(value,na.rm=T)),Q1=prefn(quantile(value,0.25,na.rm=T)),Q3=prefn(quantile(value,.75,na.rm=T)),MeanSD=sprintf("%s\u00B1%s",Mean,SD),Median_Q1Q3=sprintf("%s (%s-%s)",median,Q1,Q3)) %>>%
-      melt(id.vars=c(group_var,"variable"),measure.vars=c("MeanSD","Median_Q1Q3"),variable.name = "stat") %>>% dcast(sprintf("variable+stat~%s",group_var),value.var="value") %>>% {
+      summarise(Mean=prefn(mean(value,na.rm=T)),SD=prefn(sd(value,na.rm=T)),median=prefn(median(value,na.rm=T)),Q1=prefn(quantile(value,0.25,na.rm=T)),Q3=prefn(quantile(value,.75,na.rm=T)),"Mean\u00B1SD"=sprintf("%s\u00B1%s",Mean,SD),`Median (Q1-Q3)`=sprintf("%s (%s-%s)",median,Q1,Q3)) %>>%
+      melt(id.vars=c(group_var,"variable"),measure.vars=c("Mean\u00B1SD","Median (Q1-Q3)"),variable.name = "stat") %>>%
+      mutate_each(funs(as.character),stat) %>>%
+      dcast(sprintf("variable+stat~%s",group_var),value.var="value") %>>%
+      mutate_each(funs(as.character),variable) %>>%
+      {
         if(gn>1) {
           left_join(.,k1,by=c("variable","stat"))
         } else {
