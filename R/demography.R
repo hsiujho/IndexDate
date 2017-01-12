@@ -88,6 +88,8 @@ demo_fn_v2=function(y,group_var,disc_var,cont_var,big.mark=",",perc.sym=T,dig.di
     y$Overall="Overall"
   }
 
+  y[[group_var]]%<>%as.factor()
+
   var_names=colnames(y)
   l0=group_by_(y,group_var) %>>% summarise(gN=n())
   l3=mutate(l0,variable="cohort",stat="",gN=prettyNum(gN,big.mark=big.mark)) %>>%
