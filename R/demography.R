@@ -88,8 +88,10 @@ demo_fn_v2=function(y,group_var,disc_var,cont_var,big.mark=",",perc.sym=T,dig.di
     y$Overall="Overall"
   }
 
+  y[[group_var]]%<>%as.factor()
+
   var_names=colnames(y)
-  l0=group_by_(y,group_var) %>>% summarise(gN=n())
+  l0=group_by_(y,group_var) %>>% dplyr::summarise(gN=n())
   l3=mutate(l0,variable="cohort",stat="",gN=prettyNum(gN,big.mark=big.mark)) %>>%
     select_(.dots=c("variable","stat","gN",group_var)) %>>%
     dcast(sprintf("variable+stat~%s",group_var),value.var = "gN")
@@ -113,7 +115,7 @@ demo_fn_v2=function(y,group_var,disc_var,cont_var,big.mark=",",perc.sym=T,dig.di
     l1=mutate_each_(y,funs(as.character),disc_var) %>>%
       melt(id.vars = group_var,measure.vars = disc_var,value.name = "stat") %>>%
       group_by_(.dots=c(group_var,"variable","stat")) %>>%
-      summarise(N=n()) %>>%
+      dplyr::summarise(N=n()) %>>%
       left_join(l0,by=group_var) %>>%
       mutate(lab=sprintf("%s (%s%s)",prettyNum(N,big.mark=big.mark),sprintf(sprintf("%%.%if",dig.disc),N/gN*100),ifelse(perc.sym,"%",""))) %>>%
       mutate_each(funs(as.character),stat) %>>%
@@ -159,7 +161,7 @@ demo_fn_v2=function(y,group_var,disc_var,cont_var,big.mark=",",perc.sym=T,dig.di
       melt(id.vars = group_var,measure.vars = cont_var) %>>%
       group_by_(.dots=c(group_var,"variable")) %>>%
       #      summarise(Mean=mean(value,na.rm=T),SD=sd(value,na.rm=T),median=median(value,na.rm=T),Q1=quantile(value,0.25,na.rm=T),Q3=quantile(value,.75,na.rm=T),MeanSD=sprintf("%.1f\u00B1%.1f",Mean,SD),Median_Q1Q3=sprintf("%.1f (%.1f-%.1f)",median,Q1,Q3)) %>>%
-      summarise(Mean=prefn(mean(value,na.rm=T)),SD=prefn(sd(value,na.rm=T)),median=prefn(median(value,na.rm=T)),Q1=prefn(quantile(value,0.25,na.rm=T)),Q3=prefn(quantile(value,.75,na.rm=T)),"Mean\u00B1SD"=sprintf("%s\u00B1%s",Mean,SD),`Median (Q1-Q3)`=sprintf("%s (%s-%s)",median,Q1,Q3)) %>>%
+      dplyr::summarise(Mean=prefn(mean(value,na.rm=T)),SD=prefn(sd(value,na.rm=T)),median=prefn(median(value,na.rm=T)),Q1=prefn(quantile(value,0.25,na.rm=T)),Q3=prefn(quantile(value,.75,na.rm=T)),"Mean\u00B1SD"=sprintf("%s\u00B1%s",Mean,SD),`Median (Q1-Q3)`=sprintf("%s (%s-%s)",median,Q1,Q3)) %>>%
       melt(id.vars=c(group_var,"variable"),measure.vars=c("Mean\u00B1SD","Median (Q1-Q3)"),variable.name = "stat") %>>%
       mutate_each(funs(as.character),stat) %>>%
       dcast(sprintf("variable+stat~%s",group_var),value.var="value") %>>%

@@ -73,8 +73,8 @@ crr.summary=function(data,ftime.var,fstatus.var,continuous.cov=NULL,discrete.cov
 
   if(!is.null(discrete.cov)){
     b1=lapply(discrete.cov,function(x){
-      c0=group_by_(data,x) %>>% summarise(N=n())
-      c1=group_by_(data,x,fstatus.var) %>>% summarise(N=n()) %>>%
+      c0=group_by_(data,x) %>>% dplyr::summarise(N=n())
+      c1=group_by_(data,x,fstatus.var) %>>% dplyr::summarise(N=n()) %>>%
         dcast(formula(sprintf("%s~%s",x,fstatus.var)),value.var="N")
       left_join(c0,c1,by=x) %>>% rename_(.dots=c(stat=x)) %>>%
         mutate_each(funs(as.character),stat)
