@@ -25,6 +25,10 @@ Match4 <- function(df_case, df_ctrl, meaname, threshold, NumMatch = 1L) {
     .Call('IndexDate_Match4', PACKAGE = 'IndexDate', df_case, df_ctrl, meaname, threshold, NumMatch)
 }
 
+Match41 <- function(df_case, df_ctrl, ID_var, meaname, threshold) {
+    .Call('IndexDate_Match41', PACKAGE = 'IndexDate', df_case, df_ctrl, ID_var, meaname, threshold)
+}
+
 Match5 <- function(df_case, df_ctrl, meaname, threshold, NumMatch = 1L) {
     .Call('IndexDate_Match5', PACKAGE = 'IndexDate', df_case, df_ctrl, meaname, threshold, NumMatch)
 }
