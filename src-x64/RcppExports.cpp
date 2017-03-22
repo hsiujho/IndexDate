@@ -97,6 +97,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// Match41
+DataFrame Match41(DataFrame df_case, DataFrame df_ctrl, String ID_var, CharacterVector meaname, arma::vec threshold);
+RcppExport SEXP IndexDate_Match41(SEXP df_caseSEXP, SEXP df_ctrlSEXP, SEXP ID_varSEXP, SEXP meanameSEXP, SEXP thresholdSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< DataFrame >::type df_case(df_caseSEXP);
+    Rcpp::traits::input_parameter< DataFrame >::type df_ctrl(df_ctrlSEXP);
+    Rcpp::traits::input_parameter< String >::type ID_var(ID_varSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type meaname(meanameSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type threshold(thresholdSEXP);
+    rcpp_result_gen = Rcpp::wrap(Match41(df_case, df_ctrl, ID_var, meaname, threshold));
+    return rcpp_result_gen;
+END_RCPP
+}
 // Match5
 DataFrame Match5(DataFrame df_case, DataFrame df_ctrl, CharacterVector meaname, arma::vec threshold, unsigned int NumMatch);
 RcppExport SEXP IndexDate_Match5(SEXP df_caseSEXP, SEXP df_ctrlSEXP, SEXP meanameSEXP, SEXP thresholdSEXP, SEXP NumMatchSEXP) {
