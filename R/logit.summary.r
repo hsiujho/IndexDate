@@ -46,7 +46,11 @@ logit.summary=function(data,event.var,discrete.cov,continuous.cov){
     mutate(Char=ifelse(is.na(Char),Fact1,Char)) %>>%
     mutate_each_(funs(ifelse(is.na(.),"",.)),levels(data[[event.var]])) %>>%
 #    select_(.dots=c("Char",levels(factor(data[[event.var]])),"OR","pvalue")) %>>%
-    filter(Char!="(Intercept)")
+    filter(Char!="(Intercept)") %>>%
+    (mutate(.,ORlb95CI=ifelse(grepl("NA",.[[ncol(.)]])|grepl("NA",.[[ncol(.)-1]]),"",sprintf("%.3f",exp(Estimate+qnorm(.025)*`Std..Error`)))
+            ,ORub95CI=ifelse(grepl("NA",.[[ncol(.)]])|grepl("NA",.[[ncol(.)-1]]),"",sprintf("%.3f",exp(Estimate+qnorm(.975)*`Std..Error`)))
+            ,OR95CI=sprintf("%s (%s-%s)",OR,ORlb95CI,ORub95CI)
+    ))
 
   return(list(model=m1,summary=s2))
 }
