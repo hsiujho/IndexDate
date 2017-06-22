@@ -77,7 +77,7 @@ crr.summary=function(data,ftime.var,fstatus.var,continuous.cov=NULL,discrete.cov
       c1=group_by_(data,x,fstatus.var) %>>% dplyr::summarise(N=n()) %>>%
         dcast(formula(sprintf("%s~%s",x,fstatus.var)),value.var="N")
       left_join(c0,c1,by=x) %>>% rename_(.dots=c(stat=x)) %>>%
-        mutate_each(funs(as.character),stat)
+        mutate_at(funs(as.character),.vars="stat")
     }) %>>% setNames(discrete.cov) %>>% bind_rows(.id="variable")
 
     d0=tab1$cov %>>%

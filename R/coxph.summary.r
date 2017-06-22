@@ -34,16 +34,16 @@ coxph.summary=function(data,ftime.var,fstatus.var,continuous.cov=NULL,discrete.c
   }
 
   covm = sprintf("~%s",for.cov) %>%
-    as.formula() %>% model.matrix(data)# %>% "["(,-1)
+    as.formula() %>% model.matrix(data) %>% "["(,-1,drop=F)
 
   #  if(class(covm)!="matrix") covm=matrix(covm,ncol=1)
-  if(ncol(covm)==2){
-    covm.colnames=colnames(covm)
-    covm=matrix(covm[,-1],ncol=1)
-    colnames(covm)=covm.colnames[2]
-  } else {
-    covm=covm[,-1]
-  }
+  # if(ncol(covm)==2){
+  #   covm.colnames=colnames(covm)
+  #   covm=matrix(covm[,-1],ncol=1)
+  #   colnames(covm)=covm.colnames[2]
+  # } else {
+  #   covm=covm[,-1]
+  # }
 
   c1 <- sprintf("Surv(%s,%s)~%s",ftime.var,fstatus.var,for.cov) %>%
     as.formula() %>% coxph(data = data)
@@ -75,11 +75,13 @@ coxph.summary=function(data,ftime.var,fstatus.var,continuous.cov=NULL,discrete.c
 
   if(!is.null(discrete.cov)){
     b1=lapply(discrete.cov,function(x){
+      # x=discrete.cov[1]
       c0=group_by_(data,x) %>>% dplyr::summarise(N=n())
+      attributes(c0[[x]])$label=NULL
       c1=group_by_(data,x,fstatus.var) %>>% dplyr::summarise(N=n()) %>>%
         dcast(formula(sprintf("%s~%s",x,fstatus.var)),value.var="N")
       left_join(c0,c1,by=x) %>>% rename_(.dots=c(stat=x)) %>>%
-        mutate_each(funs(as.character),stat)
+        mutate_at(funs(as.character),.vars="stat")
     }) %>>% setNames(discrete.cov) %>>% bind_rows(.id="variable")
 
     d0=tab1$cov %>>%

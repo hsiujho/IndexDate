@@ -192,3 +192,25 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+
+static const R_CallMethodDef CallEntries[] = {
+    {"IndexDate_Match1", (DL_FUNC) &IndexDate_Match1, 5},
+    {"IndexDate_Match11", (DL_FUNC) &IndexDate_Match11, 8},
+    {"IndexDate_Match2", (DL_FUNC) &IndexDate_Match2, 5},
+    {"IndexDate_Match3", (DL_FUNC) &IndexDate_Match3, 5},
+    {"IndexDate_myorder_arma_2", (DL_FUNC) &IndexDate_myorder_arma_2, 3},
+    {"IndexDate_Match4", (DL_FUNC) &IndexDate_Match4, 5},
+    {"IndexDate_Match41", (DL_FUNC) &IndexDate_Match41, 5},
+    {"IndexDate_Match5", (DL_FUNC) &IndexDate_Match5, 5},
+    {"IndexDate_Match6", (DL_FUNC) &IndexDate_Match6, 5},
+    {"IndexDate_Match7", (DL_FUNC) &IndexDate_Match7, 6},
+    {"IndexDate_rcpp_hello", (DL_FUNC) &IndexDate_rcpp_hello, 0},
+    {"IndexDate_index_date", (DL_FUNC) &IndexDate_index_date, 2},
+    {"IndexDate_index_date_1", (DL_FUNC) &IndexDate_index_date_1, 2},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_IndexDate(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}

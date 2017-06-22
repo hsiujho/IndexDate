@@ -13,12 +13,12 @@
 
 #
 
-logit.summary=function(data,event.var,discrete.cov,continuous.cov){
+logit.summary=function(data,event.var,discrete.cov,continuous.cov,digits=2){
 
   f1=discrete.cov %>>%
     (sprintf("factor(%s)",.)) %>>%
     paste(collapse="+") %>>%
-    (sprintf("%s~%s+%s",event.var,.,continuous.cov)) %>>%
+    (sprintf("%s~%s+%s",event.var,.,paste(continuous.cov,collapse="+"))) %>>%
     as.formula()
 
   m1=glm(f1,family=binomial(link='logit'),data=data)
@@ -40,15 +40,15 @@ logit.summary=function(data,event.var,discrete.cov,continuous.cov){
     mutate(Fact=Fact1 %>>%
              (regmatches(., gregexpr("\\(.*?\\)", .))) %>>%
              (gsub("[\\(\\)]", "",.)) %>>%
-             (ifelse(.=="character0","",.)),OR=sprintf("%.3f",exp(Estimate))
-           ,pvalue=`Pr...z..` %>>% (ifelse(.<.001,"<.001",ifelse(.>.999,">.999",sprintf("%.3f",.))))
+             (ifelse(.=="character0","",.)),OR=sprintf(sprintf("%%.%if",digits),exp(Estimate))
+           ,pvalue=`Pr...z..` %>>% (ifelse(.<.001,"<.001",ifelse(.>.999,">.999",sprintf(sprintf("%%.%if",digits),.))))
     ) %>>% left_join(s1,by="Fact1") %>>%
     mutate(Char=ifelse(is.na(Char),Fact1,Char)) %>>%
-    mutate_each_(funs(ifelse(is.na(.),"",.)),levels(data[[event.var]])) %>>%
+    # mutate_at(funs(ifelse(is.na(.),"",.)),.vars=unique(data[[event.var]])) %>>%
 #    select_(.dots=c("Char",levels(factor(data[[event.var]])),"OR","pvalue")) %>>%
     filter(Char!="(Intercept)") %>>%
-    (mutate(.,ORlb95CI=ifelse(grepl("NA",.[[ncol(.)]])|grepl("NA",.[[ncol(.)-1]]),"",sprintf("%.3f",exp(Estimate+qnorm(.025)*`Std..Error`)))
-            ,ORub95CI=ifelse(grepl("NA",.[[ncol(.)]])|grepl("NA",.[[ncol(.)-1]]),"",sprintf("%.3f",exp(Estimate+qnorm(.975)*`Std..Error`)))
+    (mutate(.,ORlb95CI=ifelse(grepl("NA",.[[ncol(.)]])|grepl("NA",.[[ncol(.)-1]]),"",sprintf(sprintf("%%.%if",digits),exp(Estimate+qnorm(.025)*`Std..Error`)))
+            ,ORub95CI=ifelse(grepl("NA",.[[ncol(.)]])|grepl("NA",.[[ncol(.)-1]]),"",sprintf(sprintf("%%.%if",digits),exp(Estimate+qnorm(.975)*`Std..Error`)))
             ,OR95CI=sprintf("%s (%s-%s)",OR,ORlb95CI,ORub95CI)
     ))
 
@@ -65,3 +65,11 @@ logit.summary=function(data,event.var,discrete.cov,continuous.cov){
 #                 ,discrete.cov=dist_var
 #                 ,continuous.cov="age")
 
+# mydata <- read.csv("https://stats.idre.ucla.edu/stat/data/binary.csv")
+# ## view the first few rows of the data
+# head(mydata)
+# mydata$rank <- factor(mydata$rank)
+# mylogit <- glm(admit ~ gre + gpa + rank, data = mydata, family = "binomial")
+#
+# a1=logit.summary(mydata,event.var="admit",discrete.cov="rank"
+#                  ,continuous.cov=c("gre","gpa"))
