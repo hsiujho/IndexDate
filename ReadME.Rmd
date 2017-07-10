@@ -1,0 +1,18 @@
+---
+title: "IndexDate"
+author: "Hsiu J. Ho"
+date: "2017年7月10日"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+這個套件主要撰寫配對程式及資料摘要整理, 其中配對程式是以Rcpp加強效率, 摘要整理包括群組間變數發生次數或平均數及組間比較, 還有建模後參數估計值整理.
+
+安裝本套件
+```{r,eval=FALSE}
+require(devtools)
+install_github("hsiujho/IndexDate")
+```
