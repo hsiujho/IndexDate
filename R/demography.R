@@ -137,7 +137,7 @@ demo_fn_v2=function(y,group_var,disc_var,cont_var,big.mark=",",perc.sym=T,dig.di
     if(gn>1){
       k0=list()
       for(i in cont_var){
-        pv1=anova(lm(y[[i]]~y[[group_var]]))
+        pv1=try(anova(lm(y[[i]]~y[[group_var]])))
         if(gn==2){
           pv2=try(wilcox.test(y[[i]]~y[[group_var]]))
         } else if (gn>2) {
