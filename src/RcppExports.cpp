@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // Match1
 DataFrame Match1(DataFrame df_case, DataFrame df_ctrl, String ps_var, double ps_threshold, int NumMatch);
-RcppExport SEXP IndexDate_Match1(SEXP df_caseSEXP, SEXP df_ctrlSEXP, SEXP ps_varSEXP, SEXP ps_thresholdSEXP, SEXP NumMatchSEXP) {
+RcppExport SEXP _IndexDate_Match1(SEXP df_caseSEXP, SEXP df_ctrlSEXP, SEXP ps_varSEXP, SEXP ps_thresholdSEXP, SEXP NumMatchSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -23,7 +23,7 @@ END_RCPP
 }
 // Match11
 DataFrame Match11(DataFrame df_case, DataFrame df_ctrl, CharacterVector meaname, arma::vec threshold, String ID_var, String group_var, CharacterVector lab_ctrl, arma::uvec NumMatch);
-RcppExport SEXP IndexDate_Match11(SEXP df_caseSEXP, SEXP df_ctrlSEXP, SEXP meanameSEXP, SEXP thresholdSEXP, SEXP ID_varSEXP, SEXP group_varSEXP, SEXP lab_ctrlSEXP, SEXP NumMatchSEXP) {
+RcppExport SEXP _IndexDate_Match11(SEXP df_caseSEXP, SEXP df_ctrlSEXP, SEXP meanameSEXP, SEXP thresholdSEXP, SEXP ID_varSEXP, SEXP group_varSEXP, SEXP lab_ctrlSEXP, SEXP NumMatchSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -41,7 +41,7 @@ END_RCPP
 }
 // Match2
 DataFrame Match2(DataFrame df_case, DataFrame df_ctrl, String ps_var, double ps_threshold, int NumMatch);
-RcppExport SEXP IndexDate_Match2(SEXP df_caseSEXP, SEXP df_ctrlSEXP, SEXP ps_varSEXP, SEXP ps_thresholdSEXP, SEXP NumMatchSEXP) {
+RcppExport SEXP _IndexDate_Match2(SEXP df_caseSEXP, SEXP df_ctrlSEXP, SEXP ps_varSEXP, SEXP ps_thresholdSEXP, SEXP NumMatchSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -56,7 +56,7 @@ END_RCPP
 }
 // Match3
 DataFrame Match3(DataFrame df_case, DataFrame df_ctrl, CharacterVector meaname, NumericVector threshold, int NumMatch);
-RcppExport SEXP IndexDate_Match3(SEXP df_caseSEXP, SEXP df_ctrlSEXP, SEXP meanameSEXP, SEXP thresholdSEXP, SEXP NumMatchSEXP) {
+RcppExport SEXP _IndexDate_Match3(SEXP df_caseSEXP, SEXP df_ctrlSEXP, SEXP meanameSEXP, SEXP thresholdSEXP, SEXP NumMatchSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -71,7 +71,7 @@ END_RCPP
 }
 // myorder_arma_2
 arma::uvec myorder_arma_2(arma::mat x, arma::uvec posi, unsigned int head);
-RcppExport SEXP IndexDate_myorder_arma_2(SEXP xSEXP, SEXP posiSEXP, SEXP headSEXP) {
+RcppExport SEXP _IndexDate_myorder_arma_2(SEXP xSEXP, SEXP posiSEXP, SEXP headSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -84,7 +84,7 @@ END_RCPP
 }
 // Match4
 DataFrame Match4(DataFrame df_case, DataFrame df_ctrl, CharacterVector meaname, arma::vec threshold, unsigned int NumMatch);
-RcppExport SEXP IndexDate_Match4(SEXP df_caseSEXP, SEXP df_ctrlSEXP, SEXP meanameSEXP, SEXP thresholdSEXP, SEXP NumMatchSEXP) {
+RcppExport SEXP _IndexDate_Match4(SEXP df_caseSEXP, SEXP df_ctrlSEXP, SEXP meanameSEXP, SEXP thresholdSEXP, SEXP NumMatchSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -99,7 +99,7 @@ END_RCPP
 }
 // Match41
 DataFrame Match41(DataFrame df_case, DataFrame df_ctrl, String ID_var, CharacterVector meaname, arma::vec threshold);
-RcppExport SEXP IndexDate_Match41(SEXP df_caseSEXP, SEXP df_ctrlSEXP, SEXP ID_varSEXP, SEXP meanameSEXP, SEXP thresholdSEXP) {
+RcppExport SEXP _IndexDate_Match41(SEXP df_caseSEXP, SEXP df_ctrlSEXP, SEXP ID_varSEXP, SEXP meanameSEXP, SEXP thresholdSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -114,7 +114,7 @@ END_RCPP
 }
 // Match5
 DataFrame Match5(DataFrame df_case, DataFrame df_ctrl, CharacterVector meaname, arma::vec threshold, unsigned int NumMatch);
-RcppExport SEXP IndexDate_Match5(SEXP df_caseSEXP, SEXP df_ctrlSEXP, SEXP meanameSEXP, SEXP thresholdSEXP, SEXP NumMatchSEXP) {
+RcppExport SEXP _IndexDate_Match5(SEXP df_caseSEXP, SEXP df_ctrlSEXP, SEXP meanameSEXP, SEXP thresholdSEXP, SEXP NumMatchSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -129,7 +129,7 @@ END_RCPP
 }
 // Match6
 DataFrame Match6(DataFrame df_case, DataFrame df_ctrl, CharacterVector meaname, NumericVector threshold, unsigned int NumMatch);
-RcppExport SEXP IndexDate_Match6(SEXP df_caseSEXP, SEXP df_ctrlSEXP, SEXP meanameSEXP, SEXP thresholdSEXP, SEXP NumMatchSEXP) {
+RcppExport SEXP _IndexDate_Match6(SEXP df_caseSEXP, SEXP df_ctrlSEXP, SEXP meanameSEXP, SEXP thresholdSEXP, SEXP NumMatchSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -144,7 +144,7 @@ END_RCPP
 }
 // Match7
 DataFrame Match7(DataFrame df_case, DataFrame df_ctrl, CharacterVector meaname, arma::vec threshold, unsigned int NumMatch, int threads);
-RcppExport SEXP IndexDate_Match7(SEXP df_caseSEXP, SEXP df_ctrlSEXP, SEXP meanameSEXP, SEXP thresholdSEXP, SEXP NumMatchSEXP, SEXP threadsSEXP) {
+RcppExport SEXP _IndexDate_Match7(SEXP df_caseSEXP, SEXP df_ctrlSEXP, SEXP meanameSEXP, SEXP thresholdSEXP, SEXP NumMatchSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -160,7 +160,7 @@ END_RCPP
 }
 // rcpp_hello
 List rcpp_hello();
-RcppExport SEXP IndexDate_rcpp_hello() {
+RcppExport SEXP _IndexDate_rcpp_hello() {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -170,7 +170,7 @@ END_RCPP
 }
 // index_date
 DataFrame index_date(DataFrame df_case, DataFrame df_ctrl);
-RcppExport SEXP IndexDate_index_date(SEXP df_caseSEXP, SEXP df_ctrlSEXP) {
+RcppExport SEXP _IndexDate_index_date(SEXP df_caseSEXP, SEXP df_ctrlSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -182,7 +182,7 @@ END_RCPP
 }
 // index_date_1
 DataFrame index_date_1(DataFrame df_case, DataFrame df_ctrl);
-RcppExport SEXP IndexDate_index_date_1(SEXP df_caseSEXP, SEXP df_ctrlSEXP) {
+RcppExport SEXP _IndexDate_index_date_1(SEXP df_caseSEXP, SEXP df_ctrlSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -194,19 +194,19 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"IndexDate_Match1", (DL_FUNC) &IndexDate_Match1, 5},
-    {"IndexDate_Match11", (DL_FUNC) &IndexDate_Match11, 8},
-    {"IndexDate_Match2", (DL_FUNC) &IndexDate_Match2, 5},
-    {"IndexDate_Match3", (DL_FUNC) &IndexDate_Match3, 5},
-    {"IndexDate_myorder_arma_2", (DL_FUNC) &IndexDate_myorder_arma_2, 3},
-    {"IndexDate_Match4", (DL_FUNC) &IndexDate_Match4, 5},
-    {"IndexDate_Match41", (DL_FUNC) &IndexDate_Match41, 5},
-    {"IndexDate_Match5", (DL_FUNC) &IndexDate_Match5, 5},
-    {"IndexDate_Match6", (DL_FUNC) &IndexDate_Match6, 5},
-    {"IndexDate_Match7", (DL_FUNC) &IndexDate_Match7, 6},
-    {"IndexDate_rcpp_hello", (DL_FUNC) &IndexDate_rcpp_hello, 0},
-    {"IndexDate_index_date", (DL_FUNC) &IndexDate_index_date, 2},
-    {"IndexDate_index_date_1", (DL_FUNC) &IndexDate_index_date_1, 2},
+    {"_IndexDate_Match1", (DL_FUNC) &_IndexDate_Match1, 5},
+    {"_IndexDate_Match11", (DL_FUNC) &_IndexDate_Match11, 8},
+    {"_IndexDate_Match2", (DL_FUNC) &_IndexDate_Match2, 5},
+    {"_IndexDate_Match3", (DL_FUNC) &_IndexDate_Match3, 5},
+    {"_IndexDate_myorder_arma_2", (DL_FUNC) &_IndexDate_myorder_arma_2, 3},
+    {"_IndexDate_Match4", (DL_FUNC) &_IndexDate_Match4, 5},
+    {"_IndexDate_Match41", (DL_FUNC) &_IndexDate_Match41, 5},
+    {"_IndexDate_Match5", (DL_FUNC) &_IndexDate_Match5, 5},
+    {"_IndexDate_Match6", (DL_FUNC) &_IndexDate_Match6, 5},
+    {"_IndexDate_Match7", (DL_FUNC) &_IndexDate_Match7, 6},
+    {"_IndexDate_rcpp_hello", (DL_FUNC) &_IndexDate_rcpp_hello, 0},
+    {"_IndexDate_index_date", (DL_FUNC) &_IndexDate_index_date, 2},
+    {"_IndexDate_index_date_1", (DL_FUNC) &_IndexDate_index_date_1, 2},
     {NULL, NULL, 0}
 };
 

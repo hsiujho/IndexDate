@@ -2,54 +2,54 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 Match1 <- function(df_case, df_ctrl, ps_var = "ps", ps_threshold = 0.1, NumMatch = 1L) {
-    .Call('IndexDate_Match1', PACKAGE = 'IndexDate', df_case, df_ctrl, ps_var, ps_threshold, NumMatch)
+    .Call('_IndexDate_Match1', PACKAGE = 'IndexDate', df_case, df_ctrl, ps_var, ps_threshold, NumMatch)
 }
 
 Match11 <- function(df_case, df_ctrl, meaname, threshold, ID_var, group_var, lab_ctrl, NumMatch) {
-    .Call('IndexDate_Match11', PACKAGE = 'IndexDate', df_case, df_ctrl, meaname, threshold, ID_var, group_var, lab_ctrl, NumMatch)
+    .Call('_IndexDate_Match11', PACKAGE = 'IndexDate', df_case, df_ctrl, meaname, threshold, ID_var, group_var, lab_ctrl, NumMatch)
 }
 
 Match2 <- function(df_case, df_ctrl, ps_var = "ps", ps_threshold = 0.1, NumMatch = 1L) {
-    .Call('IndexDate_Match2', PACKAGE = 'IndexDate', df_case, df_ctrl, ps_var, ps_threshold, NumMatch)
+    .Call('_IndexDate_Match2', PACKAGE = 'IndexDate', df_case, df_ctrl, ps_var, ps_threshold, NumMatch)
 }
 
 Match3 <- function(df_case, df_ctrl, meaname, threshold, NumMatch = 1L) {
-    .Call('IndexDate_Match3', PACKAGE = 'IndexDate', df_case, df_ctrl, meaname, threshold, NumMatch)
+    .Call('_IndexDate_Match3', PACKAGE = 'IndexDate', df_case, df_ctrl, meaname, threshold, NumMatch)
 }
 
 myorder_arma_2 <- function(x, posi = 0L, head = 0L) {
-    .Call('IndexDate_myorder_arma_2', PACKAGE = 'IndexDate', x, posi, head)
+    .Call('_IndexDate_myorder_arma_2', PACKAGE = 'IndexDate', x, posi, head)
 }
 
 Match4 <- function(df_case, df_ctrl, meaname, threshold, NumMatch = 1L) {
-    .Call('IndexDate_Match4', PACKAGE = 'IndexDate', df_case, df_ctrl, meaname, threshold, NumMatch)
+    .Call('_IndexDate_Match4', PACKAGE = 'IndexDate', df_case, df_ctrl, meaname, threshold, NumMatch)
 }
 
 Match41 <- function(df_case, df_ctrl, ID_var, meaname, threshold) {
-    .Call('IndexDate_Match41', PACKAGE = 'IndexDate', df_case, df_ctrl, ID_var, meaname, threshold)
+    .Call('_IndexDate_Match41', PACKAGE = 'IndexDate', df_case, df_ctrl, ID_var, meaname, threshold)
 }
 
 Match5 <- function(df_case, df_ctrl, meaname, threshold, NumMatch = 1L) {
-    .Call('IndexDate_Match5', PACKAGE = 'IndexDate', df_case, df_ctrl, meaname, threshold, NumMatch)
+    .Call('_IndexDate_Match5', PACKAGE = 'IndexDate', df_case, df_ctrl, meaname, threshold, NumMatch)
 }
 
 Match6 <- function(df_case, df_ctrl, meaname, threshold, NumMatch = 1L) {
-    .Call('IndexDate_Match6', PACKAGE = 'IndexDate', df_case, df_ctrl, meaname, threshold, NumMatch)
+    .Call('_IndexDate_Match6', PACKAGE = 'IndexDate', df_case, df_ctrl, meaname, threshold, NumMatch)
 }
 
 Match7 <- function(df_case, df_ctrl, meaname, threshold, NumMatch = 1L, threads = 1L) {
-    .Call('IndexDate_Match7', PACKAGE = 'IndexDate', df_case, df_ctrl, meaname, threshold, NumMatch, threads)
+    .Call('_IndexDate_Match7', PACKAGE = 'IndexDate', df_case, df_ctrl, meaname, threshold, NumMatch, threads)
 }
 
 rcpp_hello <- function() {
-    .Call('IndexDate_rcpp_hello', PACKAGE = 'IndexDate')
+    .Call('_IndexDate_rcpp_hello', PACKAGE = 'IndexDate')
 }
 
 index_date <- function(df_case, df_ctrl) {
-    .Call('IndexDate_index_date', PACKAGE = 'IndexDate', df_case, df_ctrl)
+    .Call('_IndexDate_index_date', PACKAGE = 'IndexDate', df_case, df_ctrl)
 }
 
 index_date_1 <- function(df_case, df_ctrl) {
-    .Call('IndexDate_index_date_1', PACKAGE = 'IndexDate', df_case, df_ctrl)
+    .Call('_IndexDate_index_date_1', PACKAGE = 'IndexDate', df_case, df_ctrl)
 }
 
