@@ -15,7 +15,7 @@ Imports:
     RcppProgress,cmprsk,magrittr,pipeR,
     plyr,stringr,stringi,reshape2,
     assertthat,lazyeval,tibble,
-    DBI,BH,dplyr
+    DBI,BH,dplyr,ggplot2,grid,gridExtra
 LinkingTo:
     Rcpp,
     RcppArmadillo,
@@ -24,4 +24,4 @@ LinkingTo:
 Depends: cmprsk,magrittr,pipeR,
     plyr,stringr,stringi,reshape2,
     assertthat,lazyeval,tibble,
-    DBI,BH,dplyr
+    DBI,BH,dplyr,ggplot2,grid,gridExtra

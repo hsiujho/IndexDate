@@ -3,11 +3,14 @@
 #
 #
 #
+#
+#
 
-crr.summary=function(data,ftime.var
-                     ,fstatus.var
-                     ,continuous.cov=NULL
-                     ,discrete.cov=NULL){
+finegray.coxph.summary=function(data
+                                ,ftime.var
+                                ,fstatus.var
+                                ,continuous.cov=NULL
+                                ,discrete.cov=NULL){
 
   if(is.null(continuous.cov) & is.null(discrete.cov))
     stop("continuous.cov=NULL & discrete.cov=NULL")
@@ -39,10 +42,14 @@ crr.summary=function(data,ftime.var
       data[[i]]=factor(data[[i]])
     }
   }
+  data[[fstatus.var]]=factor(data[[fstatus.var]],0:2)
 
-  covm = model.matrix(as.formula(sprintf("~%s",for.cov)),data)[,-1,drop=F]
+  f1=as.formula(sprintf("Surv(%s,%s)~%s",ftime.var,fstatus.var,for.cov))
+  dat1=finegray(f1,data=data,etype="1")
 
-  c1=crr(ftime=data[,ftime.var],fstatus=data[,fstatus.var],cov1=covm)
+  f2=as.formula(sprintf("Surv(fgstart, fgstop, fgstatus)~%s",for.cov))
+  c1 <- coxph(f2,data = dat1, weight=fgwt)
+
   tmp=summary(c1)
   pval=2*(1-pnorm(abs(tmp$coef[,'z'])))
   tab1=data.frame(
@@ -95,15 +102,20 @@ crr.summary=function(data,ftime.var
     })
     b1=Reduce(rbind,b1)
 
-    d2=tab1
-    d2$variable=d2$dis.var
-    d2$stat=d2$item
+    disc.cov.levels=lapply(discrete.cov,function(x){
+      e1=data.frame(variable=x,stat=levels(data[[x]]),stringsAsFactors = F)
+      e1$cov=with(e1,sprintf("%s%s",variable,stat))
+      return(e1)
+    })
+    disc.cov.levels=Reduce(rbind,disc.cov.levels)
+    d2=merge(tab1,disc.cov.levels,by="cov",all.x=T)
+    d2$variable=with(d2,ifelse(is.na(variable),cov,variable))
     d2$N=d2$E=d2$N.ref=d2$E.ref=NULL
     d2=merge(b1,d2,by=c("variable","stat"),all = T)
     d2$is.cont=d2$dis.var=d2$item=NULL
-    rownames(d2)=NULL
-    return(list(crr=c1,summary=tab1,summary2=d2))
+    return(list(coxph=c1,summary=tab1,summary2=d2))
   } else {
-    return(list(crr=c1,summary=tab1))
+    return(list(coxph=c1,summary=tab1))
   }
+
 }

@@ -4,7 +4,11 @@
 #
 #
 
-coxph.summary=function(data,ftime.var,fstatus.var,continuous.cov=NULL,discrete.cov=NULL){
+coxph.summary=function(data
+                       ,ftime.var
+                       ,fstatus.var
+                       ,continuous.cov=NULL
+                       ,discrete.cov=NULL){
 
   if(is.null(continuous.cov) & is.null(discrete.cov))
     stop("continuous.cov=NULL & discrete.cov=NULL")
@@ -22,31 +26,22 @@ coxph.summary=function(data,ftime.var,fstatus.var,continuous.cov=NULL,discrete.c
     discrete.cov=discrete.cov[!a0]
   }
 
+  if(length(discrete.cov)>0){
+    for(i in discrete.cov){
+      data[[i]]=factor(data[[i]])
+    }
+  }
+
   if(is.null(continuous.cov) & !is.null(discrete.cov)){
-    for.cov=paste0(sprintf("factor(%s)",discrete.cov),collapse="+")
+    for.cov=paste0(discrete.cov,collapse="+")
   }
 
   if(!is.null(continuous.cov) & !is.null(discrete.cov)){
     continuous.cov=continuous.cov[continuous.cov%in%colnames(data)]
-    for.cov=paste0(sprintf("factor(%s)",discrete.cov),collapse="+") %>%
-      c(continuous.cov) %>%
-      paste0(collapse="+")
+    for.cov= paste0(c(paste0(discrete.cov,collapse="+"),continuous.cov),collapse="+")
   }
 
-  covm = sprintf("~%s",for.cov) %>%
-    as.formula() %>% model.matrix(data) %>% "["(,-1,drop=F)
-
-  #  if(class(covm)!="matrix") covm=matrix(covm,ncol=1)
-  # if(ncol(covm)==2){
-  #   covm.colnames=colnames(covm)
-  #   covm=matrix(covm[,-1],ncol=1)
-  #   colnames(covm)=covm.colnames[2]
-  # } else {
-  #   covm=covm[,-1]
-  # }
-
-  c1 <- sprintf("Surv(%s,%s)~%s",ftime.var,fstatus.var,for.cov) %>%
-    as.formula() %>% coxph(data = data)
+  c1 <- coxph(as.formula(sprintf("Surv(%s,%s)~%s",ftime.var,fstatus.var,for.cov)),data = data)
 
   tmp=summary(c1)
   pval=2*(1-pnorm(abs(tmp$coef[,'z'])))
@@ -56,43 +51,57 @@ coxph.summary=function(data,ftime.var,fstatus.var,continuous.cov=NULL,discrete.c
     ,hr.CI.lower=tmp$conf.int[,3]
     ,hr.CI.upper=tmp$conf.int[,4]
     ,stringsAsFactors = F
-    ,check.names = F) %>%
-    mutate(N=colSums(covm)
-           ,E=colSums(subset(covm,data[,fstatus.var]==1))
-           ,N.ref=c1$n-N
-           ,E.ref=c1$nevent-E
-           ,HR=sprintf("%.2f",hr),'95% CI'=sprintf("%.2f-%.2f",hr.CI.lower,hr.CI.upper)
-           ,'p-value'=ifelse(pval<.001,"<.001",ifelse(pval>.999,">.999",sprintf("%.3f",pval)))
-           )
-
-  tab1[tab1$cov%in%continuous.cov,c("N","E","N.ref","E.ref")]=NA
-
-  for(i in discrete.cov){
-    if(length(unique(data[,i]))>2) {
-      tab1[regexpr(i,tab1$cov)!=-1,c("N.ref","E.ref")]=NA
+    ,check.names = F)
+  tab1$HR=with(tab1,sprintf("%.2f",hr),'95% CI'=sprintf("%.2f-%.2f",hr.CI.lower,hr.CI.upper))
+  tab1$'p-value'=with(tab1,ifelse(pval<.001,"<.001",ifelse(pval>.999,">.999",sprintf("%.3f",pval))))
+  tab1$is.cont=tab1$cov%in%continuous.cov
+  tab1$item=tab1$dis.var=""
+  tab1$E.ref=tab1$N.ref=tab1$E=tab1$N=NA
+  for(i in 1:NROW(tab1)){
+    #i=1
+    if(!tab1$is.cont[i]){
+      k0=lapply(discrete.cov,function(x){
+        regmatches(tab1$cov[i], regexpr(pattern=sprintf("^%s",x), tab1$cov[i]))
+      })
+      tab1$dis.var[i]=unlist(k0)
+      tab1$item[i]=gsub(sprintf("^%s",tab1$dis.var[i]),"",tab1$cov[i])
+      tab1$N[i]=sum(data[[tab1$dis.var[i]]]==tab1$item[i])
+      tab1$E[i]=sum(data[[tab1$dis.var[i]]]==tab1$item[i]&data[[fstatus.var]]=="1")
+      if(length(unique(data[[tab1$dis.var[i]]]))==2){
+        tab1$N.ref[i]=sum(data[[tab1$dis.var[i]]]!=tab1$item[i])
+        tab1$E.ref[i]=sum(data[[tab1$dis.var[i]]]!=tab1$item[i]&data[[fstatus.var]]=="1")
+      }
     }
   }
+  rownames(tab1)=NULL
 
   if(!is.null(discrete.cov)){
     b1=lapply(discrete.cov,function(x){
-      # x=discrete.cov[1]
-      c0=group_by_(data,x) %>>% dplyr::summarise(N=n())
-      attributes(c0[[x]])$label=NULL
-      c1=group_by_(data,x,fstatus.var) %>>% dplyr::summarise(N=n()) %>>%
-        dcast(formula(sprintf("%s~%s",x,fstatus.var)),value.var="N")
-      left_join(c0,c1,by=x) %>>% rename_(.dots=c(stat=x)) %>>%
-        mutate_at(funs(as.character),.vars="stat")
-    }) %>>% setNames(discrete.cov) %>>% bind_rows(.id="variable")
+      #x=discrete.cov[1]
+      c0=data.frame(table(data[[x]]))
+      colnames(c0)=c("stat","N")
+      c1=data.frame(table(data[[x]],data[[fstatus.var]]))
+      c2=split(c1,c1$Var2)
+      c2=lapply(c2,function(x){
+        x[[sprintf("status_%s",as.character(x$Var2)[1])]]=x$Freq
+        x$Var2=x$Freq=NULL
+        return(x)
+      })
+      c3=Reduce(function(df1,df2)merge(df1,df2,by="Var1"),c2)
+      c4=merge(c0,c3,by.x="stat", by.y="Var1")
+      c4$stat=as.character(c4$stat)
+      c4$variable=x
+      return(c4)
+    })
+    b1=Reduce(rbind,b1)
 
-    d0=tab1$cov %>>%
-      (regmatches(., gregexpr("\\(.*?\\)", .))) %>>%
-      (gsub("[\\(\\)]", "",.)) %>>%
-      (ifelse(.=="character0","",.))
-    d1=tab1$cov %>>% (gsub(".*\\)","",.))
-    d2=mutate(tab1,variable=d0,stat=d1) %>>%
-      dplyr::select(-N,-E,-N.ref,-E.ref) %>>%
-      (full_join(b1,.,by=c("variable","stat")))
-
+    d2=tab1
+    d2$variable=d2$dis.var
+    d2$stat=d2$item
+    d2$N=d2$E=d2$N.ref=d2$E.ref=NULL
+    d2=merge(b1,d2,by=c("variable","stat"),all = T)
+    d2$is.cont=d2$dis.var=d2$item=NULL
+    rownames(d2)=NULL
     return(list(coxph=c1,summary=tab1,summary2=d2))
   } else {
     return(list(coxph=c1,summary=tab1))
