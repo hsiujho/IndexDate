@@ -27,6 +27,8 @@ plot_CI=function(
   ,y_levels
   ,strata_vars
   ,strata_levels
+  ,arrow_length
+  ,y_expand_add
 ){
   if(missing(x_breaks)) {
     x_breaks=pretty(unlist(c(df[,c(point_est_col,lower_CI_col,upper_CI_col)])))
@@ -55,31 +57,40 @@ plot_CI=function(
   x0$left_angle=ifelse(x0[[lower_CI_col]]<x_limits[1],45,90)
   x0$right_angle=ifelse(x0[[upper_CI_col]]>x_limits[2],45,90)
   x0$Psudo_strip=""
+  x0$seq=1:NROW(x0)
 
   f2=paste0(strata_vars,collapse = "+") %>>%
     (sprintf("%s~Psudo_strip",.)) %>>%
     as.formula()
   p2=ggplot()+
-    geom_segment(aes_string(x="LCI",xend=point_est_col,y=y_var,yend=y_var),data = filter(x0,left_angle==90)
+    geom_segment(aes_string(x="LCI",xend=point_est_col,y="seq",yend="seq"),data = filter(x0,left_angle==90)
                  , lineend = "butt", linejoin ="round"
-                 ,arrow = arrow(angle = 90,ends = "first",length = unit(0.2,units = "cm")))+
-    geom_segment(aes_string(x=point_est_col,xend="UCI",y=y_var,yend=y_var),data = filter(x0,right_angle==90)
+                 , inherit.aes = F
+                 ,arrow = arrow(angle = 90,ends = "first",length = arrow_length))+
+    geom_segment(aes_string(x=point_est_col,xend="UCI",y="seq",yend="seq"),data = filter(x0,right_angle==90)
                  , lineend = "butt", linejoin ="round"
-                 ,arrow = arrow(angle = 90,ends = "last",length = unit(0.2,units = "cm")))+
-    geom_segment(aes_string(x="LCI",xend=point_est_col,y=y_var,yend=y_var),data = filter(x0,left_angle==45)
+                 , inherit.aes = F
+                 ,arrow = arrow(angle = 90,ends = "last",length = arrow_length))+
+    geom_segment(aes_string(x="LCI",xend=point_est_col,y="seq",yend="seq"),data = filter(x0,left_angle==45)
                  , lineend = "butt", linejoin ="round"
-                 ,arrow = arrow(angle = 45,ends = "first",length = unit(0.2,units = "cm")))+
-    geom_segment(aes_string(x=point_est_col,xend="UCI",y=y_var,yend=y_var),data = filter(x0,right_angle==45)
+                 , inherit.aes = F
+                 ,arrow = arrow(angle = 45,ends = "first",length = arrow_length))+
+    geom_segment(aes_string(x=point_est_col,xend="UCI",y="seq",yend="seq"),data = filter(x0,right_angle==45)
                  , lineend = "butt", linejoin ="round"
-                 ,arrow = arrow(angle = 45,ends = "last",length = unit(0.2,units = "cm")))+
-    geom_point(aes_string(x=point_est_col,y=y_var),data=x0)+
+                 , inherit.aes = F
+                 ,arrow = arrow(angle = 45,ends = "last",length = arrow_length))+
+    geom_point(aes_string(x=point_est_col,y="seq"),data=x0)+
     facet_grid(f2,scales = "free_y")+
     scale_x_continuous(breaks = x_breaks,trans = "log"
                        ,limits = x_limits,expand = c(0,0.05)#,position = "top"
-                       ,sec.axis = dup_axis())
+                       ,sec.axis = dup_axis())+
+    scale_y_reverse(breaks=x0$seq,labels=x0[[y_var]]
+                    ,minor_breaks=NULL
+                    ,expand = expand_scale(add = y_expand_add))
 
-    return(p2)
+  return(p2)
 }
+
 
 plot_table=function(
   df
@@ -91,6 +102,7 @@ plot_table=function(
   ,cols_labels
   ,cols_group
   ,cols_breaks
+  ,y_expand_add
 ){
   if(length(strata_vars)>0&missing(strata_levels)){
     strata_levels=list()
@@ -115,7 +127,8 @@ plot_table=function(
   x0=df %>>%
     mutate_at(y_var,list(~tofactor(.,y_levels,rev=T))) %>>%
     mutate_at(strata_vars[1],list(~tofactor(.,strata_levels[[strata_vars[1]]],rev=F)))
-  x1=melt(x0,id.vars = c(strata_vars,y_var),measure.vars = cols
+  x0$seq=1:NROW(x0)
+  x1=melt(x0,id.vars = c(strata_vars,"seq"),measure.vars = cols
           ,value.name = "text",variable.name = "Size") %>>%
     dplyr::mutate(top.strip=plyr::mapvalues(Size,from = cols,to=cols_group)
                   ,Size=factor(Size,levels = cols)
@@ -125,16 +138,20 @@ plot_table=function(
   f1=paste0(strata_vars,collapse = "+") %>>%
     (sprintf("%s~top.strip",.)) %>>%
     as.formula()
-  p1=ggplot(x1,aes_string(y=y_var,x="x",label="text"))+
+  p1=ggplot(x1,aes_string(y="seq",x="x",label="text"))+
     geom_text(size=4)+
     facet_grid(f1,scales = "free", switch="y")+
     scale_x_continuous(breaks =cols_breaks
                        ,labels = cols_labels
                        ,sec.axis = dup_axis()
                        ,expand = c(0,0.5)
-    )
+    )+
+    scale_y_reverse(breaks=x0$seq,labels=x0[[y_var]]
+                    ,minor_breaks=NULL
+                    ,expand = expand_scale(add = y_expand_add))
   return(p1)
 }
+
 
 plot_forest=function(
   df
@@ -156,6 +173,8 @@ plot_forest=function(
   ,cols_breaks
   ,cols_limits
   ,panel_widths
+  ,arrow_length
+  ,y_expand_add
 ){
   if(missing(x_breaks)) {
     x_breaks=pretty(unlist(c(df[,c(point_est_col,lower_CI_col,upper_CI_col)])))
@@ -198,6 +217,12 @@ plot_forest=function(
   if(missing(strata_size)){
     strata_size=20
   }
+  if(missing(arrow_length)){
+    arrow_length=unit(0.2,units = "cm")
+  }
+  if(missing(y_expand_add)){
+    y_expand_add=0.95
+  }
   cip1=plot_CI(df=df
                ,point_est_col=point_est_col
                ,lower_CI_col=lower_CI_col
@@ -206,6 +231,8 @@ plot_forest=function(
                ,y_levels = y_levels
                ,x_breaks=x_breaks
                ,strata_vars=strata_vars
+               ,arrow_length=arrow_length
+               ,y_expand_add=y_expand_add
   )
   cip2=cip1+
     geom_vline(xintercept = 1,linetype = "dashed")+
@@ -220,9 +247,9 @@ plot_forest=function(
           ,panel.spacing.y = unit(0.2,"lines")
           # ,panel.background = element_blank()
     )
-  if(length(strata_vars)==2){
-    cip2=cip2+scale_y_discrete(limits=rev(y_levels))
-  }
+  # if(length(strata_vars)==2){
+  #   cip2=cip2+scale_y_discrete(limits=rev(y_levels))
+  # }
   tabp1=plot_table(df=df
                    ,y_var = y_var
                    ,y_levels = y_levels
@@ -230,6 +257,7 @@ plot_forest=function(
                    ,cols=cols
                    ,cols_labels=cols_labels
                    ,cols_group = cols_group
+                   ,y_expand_add=y_expand_add
   )
   tabp2=tabp1+
     theme(axis.title = element_blank()
