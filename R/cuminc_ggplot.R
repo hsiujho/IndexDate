@@ -17,6 +17,7 @@ cuminc_ggplot=function(
   ,upper_anno
   ,upper_labs
   ,upper_theme
+  ,lower_text
   ,lower_theme
 ) {
   # 把 nat_tbl 轉成 data.frame 格式 ####
@@ -105,8 +106,13 @@ cuminc_ggplot=function(
     np1=np1+scale_color_manual(values = line_color)
   }
 
-  np2 <- ggplot(nat_df, aes(x=x_breaks, y=variable , label=NAT)) +
-    geom_text(hjust=1,vjust=.5,size=4) +
+  np2 <- ggplot(nat_df, aes(x=x_breaks, y=variable , label=NAT))
+    if(missing(lower_text)){
+      np2=np2+geom_text(hjust=1,vjust=.5,size=4)
+    } else {
+      np2=np2+lower_text
+    }
+  np2=np2 +
     scale_y_discrete(expand = c(0,0)) +
     scale_x_continuous(expand=x_expand)+
     coord_cartesian(xlim = xlim,ylim=c(0.5,NROW(nat_tbl)+1.5)) +
