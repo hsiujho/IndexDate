@@ -129,8 +129,9 @@ cuminc_ggplot=function(
   # Set the maximums in the gtables for gt1 and gt2
   gt1$widths[rep_pos] <- as.list(maxWidth)
   gt2$widths[rep_pos] <- as.list(maxWidth)
-  outp=grid.arrange(gt1,gt2,nrow=2,ncol=1,heights=panel_heights)
-  grid.newpage()
-  grid.draw(outp)
-  return(outp)
+  grid.arrange(gt1,gt2,nrow=2,ncol=1,heights=panel_heights)
+#  outp=grid.arrange(gt1,gt2,nrow=2,ncol=1,heights=panel_heights)
+#  grid.newpage()
+#  grid.draw(outp)
+#  return(outp)
 }
