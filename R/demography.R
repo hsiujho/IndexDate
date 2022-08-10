@@ -91,9 +91,9 @@ demo_fn_v2=function(y,group_var,disc_var,cont_var,big.mark=",",perc.sym=T,dig.di
   y[[group_var]]%<>%as.factor()
 
   var_names=colnames(y)
-  l0=group_by_(y,group_var) %>>% dplyr::summarise(gN=n())
+  l0=group_by_at(y,group_var) %>>% dplyr::summarise(gN=n())
   l3=mutate(l0,variable="cohort",stat="",gN=prettyNum(gN,big.mark=big.mark)) %>>%
-    select_(.dots=c("variable","stat","gN",group_var)) %>>%
+    select_at(c("variable","stat","gN",group_var)) %>>%
     dcast(sprintf("variable+stat~%s",group_var),value.var = "gN")
 
   if(missing(disc_var)&missing(cont_var)){return(l3)}
@@ -114,10 +114,10 @@ demo_fn_v2=function(y,group_var,disc_var,cont_var,big.mark=",",perc.sym=T,dig.di
 
     l1=mutate_at(y,.vars=disc_var,list(~as.character(.))) %>>%
       melt(id.vars = group_var,measure.vars = disc_var,value.name = "stat") %>>%
-      group_by_(.dots=c(group_var,"variable","stat")) %>>%
-      dplyr::summarise(N=n()) %>>%
+      group_by_at(c(group_var,"variable","stat")) %>>%
+      dplyr::summarise(N=n(),.groups = "drop") %>>%
       left_join(l0,by=group_var) %>>%
-      mutate(lab=sprintf("%s (%s%s)",prettyNum(N,big.mark=big.mark),sprintf(sprintf("%%.%if",dig.disc),N/gN*100),ifelse(perc.sym,"%",""))) %>>%
+      dplyr::mutate(lab=sprintf("%s (%s%s)",prettyNum(N,big.mark=big.mark),sprintf(sprintf("%%.%if",dig.disc),N/gN*100),ifelse(perc.sym,"%",""))) %>>%
       mutate_at(.vars="stat",list(~as.character(.))) %>>%
       dcast(sprintf("variable+stat~%s",group_var),value.var="lab",stringsAsFactors=F) %>>%
       mutate_at(.vars="variable",list(~as.character(.))) %>>%
@@ -162,13 +162,13 @@ demo_fn_v2=function(y,group_var,disc_var,cont_var,big.mark=",",perc.sym=T,dig.di
 
     l2=mutate_at(y,.vars=cont_var,list(~as.numeric(.))) %>>%
       melt(id.vars = group_var,measure.vars = cont_var) %>>%
-      group_by_(.dots=c(group_var,"variable")) %>>%
-      #      summarise(Mean=mean(value,na.rm=T),SD=sd(value,na.rm=T),median=median(value,na.rm=T),Q1=quantile(value,0.25,na.rm=T),Q3=quantile(value,.75,na.rm=T),MeanSD=sprintf("%.1f\u00B1%.1f",Mean,SD),Median_Q1Q3=sprintf("%.1f (%.1f-%.1f)",median,Q1,Q3)) %>>%
+      group_by_at(c(group_var,"variable")) %>>%
       dplyr::summarise(Mean=prefn(mean(value,na.rm=T))
                        ,SD=prefn(sd(value,na.rm=T))
                        ,median=prefn(median(value,na.rm=T))
                        ,Q1=prefn(quantile(value,0.25,na.rm=T))
-                       ,Q3=prefn(quantile(value,.75,na.rm=T))) %>>%
+                       ,Q3=prefn(quantile(value,.75,na.rm=T))
+                       ,.groups = "drop") %>>%
       dplyr::mutate("Mean\u00B1SD"=sprintf("%s\u00B1%s",Mean,SD)
                     ,`Median (Q1~Q3)`=sprintf("%s (%s~%s)",median,Q1,Q3)) %>>%
       melt(id.vars=c(group_var,"variable"),measure.vars=c("Mean\u00B1SD","Median (Q1~Q3)"),variable.name = "stat") %>>%
